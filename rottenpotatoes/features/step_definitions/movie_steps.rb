@@ -60,6 +60,10 @@ Then(/^the director of "([^"]*)" should be "([^"]*)"$/) do |arg1, arg2|
   end
 end 
 
-Then(/^I should either be on the home page or the RottenPotatoes home page$/) do
-  movies_path
-end
+# Uncomment this def to test locally 
+# Notice that this def is defined in 
+# Then(/I should either be on (.+) or (.+)/) do |arg1, arg2|
+#   if !path_to(arg1).eql? movies_path and !path_to(arg2).eql? movies_path
+#     fail "Wrong home path"
+#   end
+# end
