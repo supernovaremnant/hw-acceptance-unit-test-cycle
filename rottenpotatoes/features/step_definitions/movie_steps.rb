@@ -52,3 +52,10 @@ Then /I should see all the movies/ do
   end
   # fail "Unimplemented"
 end
+
+Then(/^the director of "([^"]*)" should be "([^"]*)"$/) do |arg1, arg2|
+  movie = Movie.where( :title => arg1 ).first
+  if !movie.director.eql? arg2
+    fail "Wrong director name"
+  end
+end 

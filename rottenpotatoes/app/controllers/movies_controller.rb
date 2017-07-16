@@ -7,7 +7,44 @@ class MoviesController < ApplicationController
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
-    # will render app/views/movies/show.<extension> by default
+    if @movie.director.nil? or @movie.director.eql? ""
+      @director_info = " No director info"
+      @director_search_url = movies_path
+      flash[:notice] = "'#{@movie.title}' has no director info"
+    else
+      @director_info = @movie.director 
+      @director_search_url = search_director_path( :id => @movie.id )
+    end
+  end
+  
+  def search_director
+    @movie = Movie.find params[:id]
+    @movies = Movie.where( :director => @movie.director )
+    
+    if @movies.nil? 
+      flash[:notice] = "No such movie"
+      redirect_to movies_path 
+    end 
+    
+    sort = params[:sort] || session[:sort]
+    case sort
+    when 'title'
+      ordering,@title_header = {:title => :asc}, 'hilite'
+    when 'release_date'
+      ordering,@date_header = {:release_date => :asc}, 'hilite'
+    end
+    @all_ratings = Movie.all_ratings
+    @selected_ratings = params[:ratings] || session[:ratings] || {}
+    
+    if @selected_ratings == {}
+      @selected_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
+    end
+    
+    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+      session[:sort] = sort
+      session[:ratings] = @selected_ratings
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
   end
 
   def index
