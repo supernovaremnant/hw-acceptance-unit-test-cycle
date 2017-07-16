@@ -59,3 +59,7 @@ Then(/^the director of "([^"]*)" should be "([^"]*)"$/) do |arg1, arg2|
     fail "Wrong director name"
   end
 end 
+
+Then(/^I should either be on the home page or the RottenPotatoes home page$/) do
+  movies_path
+end

@@ -21,10 +21,10 @@ class MoviesController < ApplicationController
     @movie = Movie.find params[:id]
     @movies = Movie.where( :director => @movie.director )
     
-    if @movies.nil? 
+    if @movies.nil?
       flash[:notice] = "No such movie"
       redirect_to movies_path 
-    end 
+    end
     
     sort = params[:sort] || session[:sort]
     case sort
