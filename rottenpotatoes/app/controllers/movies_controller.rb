@@ -18,13 +18,7 @@ class MoviesController < ApplicationController
   end
   
   def search_director 
-    if params[:id].nil?
-      flash[:notice] = "No such movie"
-      redirect_to movies_path
-    end 
-    
     @movie = Movie.find_by_id params[:id]
-    
     if @movie.nil?
       flash[:notice] = "No such movie"
       redirect_to movies_path
@@ -34,15 +28,7 @@ class MoviesController < ApplicationController
       redirect_to movies_path
       return 
     end 
-    
     @movies = Movie.where( :director => @movie.director )
-    
-    if @movies.nil?
-      flash[:notice] = "No such movie"
-      redirect_to movies_path
-      return 
-    end
-    
     sort = params[:sort] || session[:sort]
     case sort
     when 'title'
@@ -52,11 +38,9 @@ class MoviesController < ApplicationController
     end
     @all_ratings = Movie.all_ratings
     @selected_ratings = params[:ratings] || session[:ratings] || {}
-    
     if @selected_ratings == {}
       @selected_ratings = Hash[@all_ratings.map {|rating| [rating, rating]}]
     end
-    
     if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
       session[:sort] = sort
       session[:ratings] = @selected_ratings
@@ -65,7 +49,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort = params[:sort] || session[:sort]
+   sort = params[:sort] || session[:sort]
     case sort
     when 'title'
       ordering,@title_header = {:title => :asc}, 'hilite'
