@@ -17,13 +17,30 @@ class MoviesController < ApplicationController
     end
   end
   
-  def search_director
-    @movie = Movie.find params[:id]
+  def search_director 
+    if params[:id].nil?
+      flash[:notice] = "No such movie"
+      redirect_to movies_path
+    end 
+    
+    @movie = Movie.find_by_id params[:id]
+    
+    if @movie.nil?
+      flash[:notice] = "No such movie"
+      redirect_to movies_path
+      return 
+    elsif @movie.director.eql? "" or @movie.director.nil? 
+      flash[:notice] = "Director info not available"
+      redirect_to movies_path
+      return 
+    end 
+    
     @movies = Movie.where( :director => @movie.director )
     
     if @movies.nil?
       flash[:notice] = "No such movie"
-      redirect_to movies_path 
+      redirect_to movies_path
+      return 
     end
     
     sort = params[:sort] || session[:sort]
